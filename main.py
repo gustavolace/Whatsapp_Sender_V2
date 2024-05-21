@@ -13,5 +13,5 @@ def import_file():
 
 
 ttk.Label(frm, text="Hello World!").grid(column=0, row=0)
-ttk.Button(frm, text="Quit", command=import_file).grid(column=1, row=0)
+ttk.Button(frm, text="Select a file", command=import_file).grid(column=1, row=0)
 root.mainloop()
