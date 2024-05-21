@@ -22,7 +22,22 @@ def gettext(input):
 	print(inp) 
 
 def getimg():
-    global img
-    img = Image.open("./assets/tempIMG.png")
-    img = img.resize((250, 250))
-    img = ImageTk.PhotoImage(img)
+	global img
+	global label
+	if os.path.isfile("./assets/tempIMG.png"):	
+		print("carregetimg")
+		img = Image.open("./assets/tempIMG.png")
+		img = img.resize((250, 250))
+		img = ImageTk.PhotoImage(img)
+		label = Label(image=img)
+		label.place(x=40, y=180)
+
+def on_button_toggle(var):
+    if var.get() == 1:
+        print("Checkbutton is selected")
+    else:
+        print("Checkbutton is deselected")
+        
+def delete_image():
+	os.remove("./assets/tempIMG.png")
+	label.destroy()
