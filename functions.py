@@ -25,9 +25,12 @@ def getimg():
 	global img
 	global label
 	if os.path.isfile("./assets/tempIMG.png"):	
-		print("carregetimg")
+		base_width = 300
 		img = Image.open("./assets/tempIMG.png")
-		img = img.resize((250, 250))
+		wpercent = (base_width / float(img.size[0]))
+		hsize = int((float(img.size[1]) * float(wpercent)))
+
+		img = img.resize((base_width, hsize), Image.Resampling.LANCZOS)
 		img = ImageTk.PhotoImage(img)
 		label = Label(image=img)
 		label.place(x=40, y=180)
