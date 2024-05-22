@@ -93,6 +93,7 @@ def gettext(input):
 		urls = make_url(list_values,inp)
 		messagebox.showinfo("Whatsapp Message Sender V2", "Starting...")
 		main(urls, debug, after)
+		number_msg = len(urls)
 
 def make_url(contacts, text):
 	urls = []

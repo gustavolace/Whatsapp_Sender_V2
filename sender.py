@@ -10,10 +10,9 @@ import os
 
 
 def main(urls, debug, after):
-    print("cheguei auqi")
+    global count, driver
     appdata_dir = os.path.expanduser("~")
     chrome_profile_dir = os.path.join(appdata_dir, 'snap', 'chromium', 'common', 'chromium', 'Profile 1')
-    global driver
     options = webdriver.ChromeOptions()
     if debug != True:
         options.add_argument("--headless")
@@ -24,16 +23,15 @@ def main(urls, debug, after):
     driver = webdriver.Chrome(service=Service('/usr/bin/chromedriver'), options=options)
     #appdata_dir = os.getenv('APPDATA')
     #chrome_profile_dir = os.path.join(appdata_dir, 'Local', 'Google', 'Chrome', 'User Data', 'Profile 1')
-
     for item in urls:
-        print("cheguei auqi")
         navigator_web_driver(item, after)
     driver.quit()
+    
 
 def css_selector(selector):
     return WebDriverWait(driver, 40).until(EC.presence_of_element_located((By.CSS_SELECTOR, f"{selector}")))
 
-def send_img(send_log):
+def send_img():
     attach_icon = css_selector("span[data-icon='attach-menu-plus']")
     attach_icon.click()
     input_file = css_selector("input[accept='image/*,video/mp4,video/3gpp,video/quicktime']")
@@ -44,29 +42,25 @@ def send_img(send_log):
     actions.send_keys(Keys.ENTER)
     actions.perform()
     time.sleep(2)
-    print(send_log)
+    print()
 
 
 def navigator_web_driver(urls, after):
     driver.get(f"{urls}")
-    global send_log
-    send_log = "Mensagem enviada"
 
     try:
         send_button = css_selector("span[data-icon='send']")
         if os.path.isfile("./assets/tempIMG.png"):
             if after:
                 send_button.click()
-                print(send_log)
                 time.sleep(1)
-                send_img("Imagem enviada")
+                send_img()
 
             else:
-                send_img(send_log)
+                send_img()
 
         else: 
             send_button.click()
-            print(send_log)
             time.sleep(2)
 
     except Exception as e:
