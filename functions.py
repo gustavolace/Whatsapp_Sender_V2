@@ -5,6 +5,8 @@ import shutil
 import os
 import openpyxl
 from tkinter import messagebox 
+from urllib.parse import quote
+from sender import *
 
 def copy_and_rename(src_path, dest_path, new_name):
 	shutil.copy(src_path, dest_path)
@@ -63,8 +65,7 @@ def delete_image():
 	label.destroy()
 
 def load_data(ttk,root):
-	global tree
-	global list_values
+	global tree, list_values
 	path = "./assets/sheet.xlsx"
 	if os.path.isfile(path):
 		workbook = openpyxl.load_workbook(path)
@@ -80,10 +81,25 @@ def load_data(ttk,root):
 			tree.insert("", END, values=value_tuple)
 
 def gettext(input):
+	global debug, after
 	inp = input.get(1.0, "end-1c")
-	print(inp)
-	print("./assets/tempIMG.png")
-	print(after) 
-	print(debug)
-	print(list_values)
-	messagebox.showinfo("Whatsapp Message Sender V2", "Starting...")
+	if inp == "":
+		messagebox.showwarning("Error","Type something on input")
+	else: 
+		if 'debug' not in globals():
+			debug = False
+		if "after" not in globals():
+			after = False
+		urls = make_url(list_values,inp)
+		messagebox.showinfo("Whatsapp Message Sender V2", "Starting...")
+		main(urls, debug, after)
+
+def make_url(contacts, text):
+	urls = []
+	for nome, telefone in contacts :
+		if nome == "Nome":
+			continue
+		client_text = text.replace("$cl", nome)
+		url = f"https://web.whatsapp.com/send/?phone={telefone}&text={quote(client_text)}"
+		urls.append(url)
+	return urls
