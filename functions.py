@@ -4,6 +4,7 @@ from PIL import ImageTk, Image
 import shutil
 import os
 import openpyxl
+from tkinter import messagebox 
 
 def copy_and_rename(src_path, dest_path, new_name):
 	shutil.copy(src_path, dest_path)
@@ -18,9 +19,12 @@ def import_file():
 		getimg()
 		print("Selected file")
 
-def gettext(input):
-	inp = input.get(1.0, "end-1c")
-	print(inp) 
+def import_sheet(ttk,root):
+	file_path = filedialog.askopenfilename(title="Select a file", filetypes=[('image files', ('.xlsx')), ("All files", "*.*")])
+	if file_path:
+		copy_and_rename(file_path, "./assets", "sheet.xlsx")
+		load_data(ttk,root)
+		print("Selected file")
 
 def getimg():
 	global img
@@ -37,10 +41,22 @@ def getimg():
 		label.grid(column=0, row=4)
 
 def on_button_toggle(var):
-    if var.get() == 1:
-        print("Checkbutton is selected")
-    else:
-        print("Checkbutton is deselected")
+	global after
+	if var.get() == 1:
+		after = True
+		print("Checkbutton is selected")
+	else:
+		after = False
+		print("Checkbutton is deselected")
+
+def on_button_debug(var2):
+	global debug
+	if var2.get() == 1:
+		debug = True
+		print("Debug is enable")
+	else:
+		debug = False
+		print("Debug is disable")
         
 def delete_image():
 	os.remove("./assets/tempIMG.png")
@@ -48,15 +64,26 @@ def delete_image():
 
 def load_data(ttk,root):
 	global tree
+	global list_values
 	path = "./assets/sheet.xlsx"
-	workbook = openpyxl.load_workbook(path)
-	sheet = workbook.active
+	if os.path.isfile(path):
+		workbook = openpyxl.load_workbook(path)
+		sheet = workbook.active
 
-	list_values = list(sheet.values)
-	cols = list_values[0]
-	tree = ttk.Treeview(root, columns=cols, show="headings")
-	for col_name in cols:
-		tree.heading(col_name, text=col_name)
-	tree.grid(column=5, row=0, pady=3) 
-	for value_tuple in list_values[1:]:
-		tree.insert("", END, values=value_tuple)
+		list_values = list(sheet.values)
+		cols = list_values[0]
+		tree = ttk.Treeview(root, columns=cols, show="headings")
+		for col_name in cols:
+			tree.heading(col_name, text=col_name)
+		tree.grid(column=5, row=0, pady=3) 
+		for value_tuple in list_values[1:]:
+			tree.insert("", END, values=value_tuple)
+
+def gettext(input):
+	inp = input.get(1.0, "end-1c")
+	print(inp)
+	print("./assets/tempIMG.png")
+	print(after) 
+	print(debug)
+	print(list_values)
+	messagebox.showinfo("Whatsapp Message Sender V2", "Starting...")
