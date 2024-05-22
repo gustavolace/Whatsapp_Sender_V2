@@ -3,6 +3,7 @@ from tkinter import *
 from PIL import ImageTk, Image
 import shutil
 import os
+import openpyxl
 
 def copy_and_rename(src_path, dest_path, new_name):
 	shutil.copy(src_path, dest_path)
@@ -33,7 +34,7 @@ def getimg():
 		img = img.resize((base_width, hsize), Image.Resampling.LANCZOS)
 		img = ImageTk.PhotoImage(img)
 		label = Label(image=img)
-		label.place(x=40, y=180)
+		label.grid(column=0, row=4)
 
 def on_button_toggle(var):
     if var.get() == 1:
@@ -44,3 +45,18 @@ def on_button_toggle(var):
 def delete_image():
 	os.remove("./assets/tempIMG.png")
 	label.destroy()
+
+def load_data(ttk,root):
+	global tree
+	path = "./assets/sheet.xlsx"
+	workbook = openpyxl.load_workbook(path)
+	sheet = workbook.active
+
+	list_values = list(sheet.values)
+	cols = list_values[0]
+	tree = ttk.Treeview(root, columns=cols, show="headings")
+	for col_name in cols:
+		tree.heading(col_name, text=col_name)
+	tree.grid(column=5, row=0, pady=3) 
+	for value_tuple in list_values[1:]:
+		tree.insert("", END, values=value_tuple)
