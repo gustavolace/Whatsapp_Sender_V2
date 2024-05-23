@@ -4,8 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.chrome.service import Service
-from tkinter import messagebox 
+#from selenium.webdriver.chrome.service import Service
 import time
 import os
 import re
@@ -30,18 +29,18 @@ def main(urls, debug, after):
     f.close()
     showMessage("Starting...", "info")
 
-    appdata_dir = os.path.expanduser("~")
-    chrome_profile_dir = os.path.join(appdata_dir, 'snap', 'chromium', 'common', 'chromium', 'Profile 1')
+    #appdata_dir = os.path.expanduser("~")
+    #chrome_profile_dir = os.path.join(appdata_dir, 'snap', 'chromium', 'common', 'chromium', 'Profile 1')
+    appdata_dir = os.getenv('APPDATA')
+    chrome_profile_dir = os.path.join(appdata_dir, 'Local', 'Google', 'Chrome', 'User Data', 'Profile 1')
     options = webdriver.ChromeOptions()
     if debug != True:
         options.add_argument("--headless")
     options.add_argument(f"--user-data-dir={chrome_profile_dir}")
     user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
     options.add_argument(f'user-agent={user_agent}')
-    #driver = webdriver.Chrome(options=options)
-    driver = webdriver.Chrome(service=Service('/usr/bin/chromedriver'), options=options)
-    #appdata_dir = os.getenv('APPDATA')
-    #chrome_profile_dir = os.path.join(appdata_dir, 'Local', 'Google', 'Chrome', 'User Data', 'Profile 1')
+    driver = webdriver.Chrome(options=options)
+    #driver = webdriver.Chrome(service=Service('/usr/bin/chromedriver'), options=options)
 
     counter = Counter()
     for item in urls:
@@ -51,7 +50,7 @@ def main(urls, debug, after):
     
 
 def css_selector(selector):
-    return WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, f"{selector}")))
+    return WebDriverWait(driver, 40).until(EC.presence_of_element_located((By.CSS_SELECTOR, f"{selector}")))
 
 def send_img():
     attach_icon = css_selector("span[data-icon='attach-menu-plus']")
