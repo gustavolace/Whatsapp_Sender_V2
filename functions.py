@@ -8,6 +8,7 @@ from tkinter import messagebox
 from urllib.parse import quote
 from sender import *
 
+
 def copy_and_rename(src_path, dest_path, new_name):
 	shutil.copy(src_path, dest_path)
 	new_path = f"{dest_path}/{new_name}"
@@ -29,8 +30,7 @@ def import_sheet(ttk,root):
 		print("Selected file")
 
 def getimg():
-	global img
-	global label
+	global img, label
 	if os.path.isfile("./assets/tempIMG.png"):	
 		base_width = 300
 		img = Image.open("./assets/tempIMG.png")
@@ -91,16 +91,17 @@ def gettext(input):
 		if "after" not in globals():
 			after = False
 		urls = make_url(list_values,inp)
-		messagebox.showinfo("Whatsapp Message Sender V2", "Starting...")
 		main(urls, debug, after)
-		number_msg = len(urls)
 
 def make_url(contacts, text):
 	urls = []
 	for nome, telefone in contacts :
 		if nome == "Nome":
 			continue
-		client_text = text.replace("$cl", nome)
-		url = f"https://web.whatsapp.com/send/?phone={telefone}&text={quote(client_text)}"
+		if nome != None:
+			client_text = text.replace("$cl", nome)
+			url = f"https://web.whatsapp.com/send/?phone={telefone}&text={quote(client_text)}"
+		else:
+			url = f"https://web.whatsapp.com/send/?phone={telefone}&text={quote(text)}"
 		urls.append(url)
 	return urls
